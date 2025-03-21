@@ -1,0 +1,36 @@
+pipeline {
+    agent any  // This means Jenkins can use any available agent to run the pipeline.
+
+    stages {
+        // Stage 1: Clone Repository
+        stage('Clone Repository') {
+            steps {
+                // Checkout code from the GitHub repository
+                git branch: 'main', url: 'https://github.com/Sharathchandra3/docker-wordpress.git'
+            }
+        }
+
+        // Stage 2: Build and Deploy
+        stage('Build and Deploy') {
+            steps {
+                script {
+                    // Stop any running containers (optional)
+                    sh 'docker-compose down'
+
+                    // Build and deploy the new containers using Docker Compose
+                    sh 'docker-compose up -d --build'
+                }
+            }
+        }
+
+        // Stage 3: Verify Deployment
+        stage('Verify Deployment') {
+            steps {
+                script {
+                    // Verify the running containers
+                    sh 'docker ps'
+                }
+            }
+        }
+    }
+}
